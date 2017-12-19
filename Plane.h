@@ -15,6 +15,6 @@ public:
 	virtual ~Plane();
 
 	Plane& operator= (const Plane& rhs);
-	virtual bool hit(const Ray& ray, double& tmin, ShadeRec& sr) const;
+	virtual bool hit(const Ray& ray, double& tmin, Tracer& tr) const;
 };
 

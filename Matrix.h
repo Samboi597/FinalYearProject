@@ -8,8 +8,8 @@ public:
 	~Matrix();
 
 	double m[4][4];
-	Matrix& operator= (const Matrix& rhs);
-	Matrix operator* (const Matrix& mat) const;
+	Matrix& operator= (const Matrix& rightSide);
+	Matrix operator* (const Matrix& matrix) const;
 	Matrix operator/ (const double d);
 	void setIdentity();
 };

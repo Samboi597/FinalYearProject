@@ -16,7 +16,7 @@ Plane::Plane(const Plane & plane) : GeometricObject(plane), a(plane.a), n(plane.
 
 Plane * Plane::clone() const
 {
-	return (new Plane(*this));
+	return new Plane(*this);
 }
 
 Plane::~Plane()
@@ -27,25 +27,25 @@ Plane & Plane::operator=(const Plane & rhs)
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	GeometricObject::operator= (rhs);
 	a = rhs.a;
 	n = rhs.n;
-	return (*this);
+	return *this;
 }
 
-bool Plane::hit(const Ray & ray, double & tmin, ShadeRec & sr) const
+bool Plane::hit(const Ray & ray, double & tmin, Tracer & tr) const
 {
 	float t = (a - ray.o) * n / (ray.d * n);
 	if (t > kEpsilon) 
 	{
 		tmin = t;
-		sr.normal = n;
-		sr.localHitPoint = ray.o + t * ray.d;
-		return (true);
+		tr.normal = n;
+		tr.hitPoint = ray.o + t * ray.d;
+		return true;
 	}
 
-	return(false);
+	return false;
 }

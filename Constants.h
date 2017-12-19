@@ -13,6 +13,3 @@ const double	kHugeValue = 1.0E10;
 
 const RGBColour	black(0.0);
 const RGBColour	white(1.0);
-const RGBColour	red(1.0, 0.0, 0.0);
-
-const float 	invRAND_MAX = 1.0 / (float)RAND_MAX;

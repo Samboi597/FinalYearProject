@@ -6,7 +6,7 @@ World scene;
 
 void winReshapeFunc(GLint w, GLint h);
 
-GraphicsWindow::GraphicsWindow() : gamma(1.0), invGamma(1.0), ifOutOfGamut(false)
+GraphicsWindow::GraphicsWindow()
 {
 	int totalCount = SCREEN_WIDTH * SCREEN_HEIGHT * 3;
 
@@ -18,7 +18,7 @@ GraphicsWindow::GraphicsWindow() : gamma(1.0), invGamma(1.0), ifOutOfGamut(false
 	}
 }
 
-GraphicsWindow::GraphicsWindow(const GraphicsWindow& vp) : gamma(vp.gamma), invGamma(vp.invGamma), ifOutOfGamut(vp.ifOutOfGamut)
+GraphicsWindow::GraphicsWindow(const GraphicsWindow& vp)
 {
 	int totalCount = SCREEN_WIDTH * SCREEN_HEIGHT * 3;
 
@@ -42,23 +42,13 @@ GraphicsWindow & GraphicsWindow::operator=(const GraphicsWindow & rhs)
 		return (*this);
 	}
 
-	gamma = rhs.gamma;
-	invGamma = rhs.invGamma;
-	ifOutOfGamut = rhs.ifOutOfGamut;
+	colourBuffer = rhs.colourBuffer;
 	return (*this);
 }
 
 void GraphicsWindow::displayPixel(const int row, const int column, const RGBColour & pixel_color)
 {
-	RGBColour mappedColour;
-
-	if (ifOutOfGamut)
-		mappedColour = clampToColour(pixel_color);
-	else
-		mappedColour = maxToOne(pixel_color);
-
-	if (gamma != 1.0)
-		mappedColour = mappedColour.powc(invGamma);
+	RGBColour mappedColour = maxToOne(pixel_color);
 
 	//have to start from max y coordinate to convert to screen coordinates
 	int x = column;
@@ -75,17 +65,6 @@ RGBColour GraphicsWindow::maxToOne(const RGBColour & c)
 		return c / maxValue;
 	else
 		return c;
-}
-
-RGBColour GraphicsWindow::clampToColour(const RGBColour & _c)
-{
-	RGBColour c(_c);
-	if (_c.r > 1.0 || _c.g > 1.0 || _c.b > 1.0)
-	{
-		c.r = 1.0; c.g = 0.0; c.b = 0.0;
-	}
-
-	return (c);
 }
 
 void GraphicsWindow::drawPixel(int x, int y, const RGBColour & c)

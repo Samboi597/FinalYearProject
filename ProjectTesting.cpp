@@ -7,13 +7,14 @@
 #include "Point3D.h"
 #include "Vector3D.h"
 #include "Normal.h"
+#include "Lambert.h"
+#include "Directional.h"
 #include "GeometricObject.h"
 #include "Sphere.h"
-#include "ShadeRec.h"
+#include "Disk.h"
 #include "World.h"
 #include "Plane.h"
-#include "SingleSphere.h"
-#include "MultipleObjects.h"
+#include "Tracer.h"
 #include "GraphicsWindow.h"
 
 /*testing Matrix.h*/
@@ -1280,15 +1281,88 @@ TEST(rayFunc, assignmentOperator)
 	EXPECT_EQ(ray2.d.y, ray.d.y);
 }
 
-/*testing ShaderRec.h*/
+/*testing Tracer.h*/
 
-TEST(shaderFunc, copyConstruct)
+TEST(tracerFunc, defaultConstruct)
 {
-	World scene;
-	ShadeRec shade(scene);
-	ShadeRec shade2(shade);
+	Tracer trace;
 
-	EXPECT_EQ(shade.hitObject, shade2.hitObject);
+	EXPECT_EQ(trace.hitObject, false);
+	EXPECT_EQ(trace.pixelColour, black);
+}
+
+TEST(tracerFunc, assignConstruct)
+{
+	Tracer trace;
+	trace.pixelColour = RGBColour(1.0, 0.0, 0.0);
+	trace.hitPoint = Point3D(0.0, 0.0, 0.0);
+
+	Tracer trace2(trace);
+	EXPECT_EQ(trace2.hitObject, false);
+	EXPECT_EQ(trace2.pixelColour.r, 1.0);
+	EXPECT_EQ(trace2.pixelColour.g, 0.0);
+	EXPECT_EQ(trace2.pixelColour.b, 0.0);
+
+	EXPECT_EQ(trace2.hitPoint.x, 0.0);
+	EXPECT_EQ(trace2.hitPoint.y, 0.0);
+	EXPECT_EQ(trace2.hitPoint.z, 0.0);
+}
+
+/*testing Lambert.h*/
+
+TEST(lambertFunc, defaultConstruct)
+{
+	Lambert testShader;
+
+	EXPECT_EQ(testShader.getAlbedo(), 0.18);
+	EXPECT_EQ(testShader.getColour().r, 0.0);
+	EXPECT_EQ(testShader.getColour().g, 0.0);
+	EXPECT_EQ(testShader.getColour().b, 0.0);
+}
+
+TEST(lambertFunc, assignConstruct)
+{
+	Lambert testShader(1.0, 0.0, 0.0, 0.18);
+
+	EXPECT_EQ(testShader.getAlbedo(), 0.18);
+	EXPECT_EQ(testShader.getColour().r, 1.0);
+	EXPECT_EQ(testShader.getColour().g, 0.0);
+	EXPECT_EQ(testShader.getColour().b, 0.0);
+}
+
+TEST(lambertFunc, copyConstruct)
+{
+	Lambert testShader(1.0, 0.0, 0.0, 0.18);
+	Lambert testShader2(testShader);
+
+	EXPECT_EQ(testShader2.getAlbedo(), 0.18);
+	EXPECT_EQ(testShader2.getColour().r, 1.0);
+	EXPECT_EQ(testShader2.getColour().g, 0.0);
+	EXPECT_EQ(testShader2.getColour().b, 0.0);
+}
+
+TEST(lambertFunc, compoundConstruct)
+{
+	RGBColour green(0.0, 1.0, 0.0);
+	Lambert testShader(green, 0.18);
+
+	EXPECT_EQ(testShader.getAlbedo(), 0.18);
+	EXPECT_EQ(testShader.getColour().r, 0.0);
+	EXPECT_EQ(testShader.getColour().g, 1.0);
+	EXPECT_EQ(testShader.getColour().b, 0.0);
+}
+
+TEST(lambertFunc, reflectedColour)
+{
+	Tracer trace;
+	Lambert testShader;
+	testShader.setColour(0.0, 0.0, 1.0);
+	testShader.setAlbedo(0.18);
+	trace.pixelColour = testShader.getReflectedColour(trace);
+
+	EXPECT_EQ(trace.pixelColour.r, 0.0);
+	EXPECT_EQ(trace.pixelColour.g, 0.0);
+	EXPECT_NEAR(trace.pixelColour.b, 0.18, 0.000001);
 }
 
 /*testing Sphere.h*/
@@ -1296,47 +1370,35 @@ TEST(shaderFunc, copyConstruct)
 TEST(sphereFunc, clone)
 {
 	Sphere sphere;
-	sphere.setColour(1.0, 0.0, 0.0);
+	sphere.shader = new Lambert(1.0, 0.0, 0.0, 0.18);
 	Sphere* sphere2 = sphere.clone();
 
-	EXPECT_EQ(sphere.getColour(), sphere2->getColour());
+	EXPECT_EQ(sphere2->shader->getAlbedo(), 0.18);
+	EXPECT_EQ(sphere2->shader->getColour().r, 1.0);
+	EXPECT_EQ(sphere2->shader->getColour().g, 0.0);
+	EXPECT_EQ(sphere2->shader->getColour().b, 0.0);
 }
 
 TEST(sphereFunc, assignmentOperator)
 {
 	Sphere sphere;
-	sphere.setColour(1.0, 0.0, 0.0);
-	Sphere sphere2 = sphere;
+	sphere.shader = new Lambert(1.0, 0.0, 0.0, 0.18);
+	Sphere* sphere2 = &sphere;
 
-	EXPECT_EQ(sphere.getColour(), sphere2.getColour());
-}
-
-TEST(sphereFunc, setColourObject)
-{
-	RGBColour red(1.0, 0.0, 0.0);
-	Sphere sphere;
-	sphere.setColour(red);
-
-	EXPECT_EQ(sphere.getColour(), red);
-}
-
-TEST(sphereFunc, setColourCoords)
-{
-	Sphere sphere;
-	sphere.setColour(1.0, 0.0, 0.0);
-
-	EXPECT_EQ(sphere.getColour().r, 1.0);
+	EXPECT_EQ(sphere2->shader->getAlbedo(), 0.18);
+	EXPECT_EQ(sphere2->shader->getColour().r, 1.0);
+	EXPECT_EQ(sphere2->shader->getColour().g, 0.0);
+	EXPECT_EQ(sphere2->shader->getColour().b, 0.0);
 }
 
 TEST(sphereFunc, rayCollision)
 {
-	World scene;
 	double t;
-	ShadeRec shade(scene);
+	Tracer trace;
 	Sphere sphere(Point3D(0, 0, 0), 50);
 	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
 
-	EXPECT_EQ(sphere.hit(ray, t, shade), true);
+	EXPECT_EQ(sphere.hit(ray, t, trace), true);
 }
 
 /*testing Plane.h*/
@@ -1344,139 +1406,148 @@ TEST(sphereFunc, rayCollision)
 TEST(planeFunc, clone)
 {
 	Plane plane;
-	plane.setColour(1.0, 0.0, 0.0);
+	plane.shader = new Lambert(1.0, 0.0, 0.0, 0.18);
 	Plane* plane2 = plane.clone();
 
-	EXPECT_EQ(plane2->getColour().r, 1.0);
+	EXPECT_EQ(plane2->shader->getAlbedo(), 0.18);
+	EXPECT_EQ(plane2->shader->getColour().r, 1.0);
+	EXPECT_EQ(plane2->shader->getColour().g, 0.0);
+	EXPECT_EQ(plane2->shader->getColour().b, 0.0);
 }
 
 TEST(planeFunc, assignmentOperator)
 {
 	Plane plane;
-	plane.setColour(1.0, 0.0, 0.0);
-	Plane plane2 = plane;
+	plane.shader = new Lambert(1.0, 0.0, 0.0, 0.18);
+	Plane* plane2 = &plane;
 
-	EXPECT_EQ(plane2.getColour().r, 1.0);
-}
-
-TEST(planeFunc, setColourObject)
-{
-	Plane plane;
-	RGBColour red(1.0, 0.0, 0.0);
-	plane.setColour(red);
-
-	EXPECT_EQ(plane.getColour().r, 1.0);
-}
-
-TEST(planeFunc, setColourCoords)
-{
-	Plane plane;
-	RGBColour red(1.0, 0.0, 0.0);
-	plane.setColour(red);
-
-	EXPECT_EQ(plane.getColour().r, 1.0);
+	EXPECT_EQ(plane2->shader->getAlbedo(), 0.18);
+	EXPECT_EQ(plane2->shader->getColour().r, 1.0);
+	EXPECT_EQ(plane2->shader->getColour().g, 0.0);
+	EXPECT_EQ(plane2->shader->getColour().b, 0.0);
 }
 
 TEST(planeFunc, rayCollision)
 {
-	World scene;
 	double t;
-	ShadeRec shade(scene);
-	Plane plane(Point3D(0.0, 0.0, -5.0), Normal(0.0, 0.0, 1.0));
+	Tracer trace;
+	Plane plane(Point3D(0.0, 0.0, -1.0), Normal(0.0, 0.0, 1.0));
 	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
 
-	EXPECT_EQ(plane.hit(ray, t, shade), true);
+	EXPECT_EQ(plane.hit(ray, t, trace), true);
 }
 
-//testing the tracer objects is difficult at the moment
-//because the tracer type is declared in the 'build' function of the World object
-//i'm holding off on testing this until a later iteration
-//when a unified tracing object has been introduced
+/*testing Disk.h*/
+
+TEST(diskFunc, clone)
+{
+	Disk disk;
+	disk.shader = new Lambert(1.0, 0.0, 0.0, 0.18);
+	Disk* disk2 = disk.clone();
+
+	EXPECT_EQ(disk2->shader->getAlbedo(), 0.18);
+	EXPECT_EQ(disk2->shader->getColour().r, 1.0);
+	EXPECT_EQ(disk2->shader->getColour().g, 0.0);
+	EXPECT_EQ(disk2->shader->getColour().b, 0.0);
+}
+
+TEST(diskFunc, assignmentOperator)
+{
+	Disk disk;
+	disk.shader = new Lambert(1.0, 0.0, 0.0, 0.18);
+	Disk* disk2 = &disk;
+
+	EXPECT_EQ(disk2->shader->getAlbedo(), 0.18);
+	EXPECT_EQ(disk2->shader->getColour().r, 1.0);
+	EXPECT_EQ(disk2->shader->getColour().g, 0.0);
+	EXPECT_EQ(disk2->shader->getColour().b, 0.0);
+}
+
+TEST(diskFunc, rayCollision)
+{
+	double t;
+	Tracer trace;
+	Disk disk(Point3D(0.0, 0.0, -1.0), Normal(0.0, 0.0, 1.0), 50);
+	Ray ray(Point3D(20.0, 20.0, 0.0), Vector3D(0.0, 0.0, -1.0));
+
+	EXPECT_EQ(disk.hit(ray, t, trace), true);
+}
+
+/*testing Directional.h*/
+
+TEST(directionalFunc, getLighting)
+{
+	Directional light(RGBColour(1.0, 1.0, 1.0), 3.0, Vector3D(0.0, -1.0, 0.0));
+	Tracer trace;
+	trace.hitPoint = Point3D(0.0, 0.0, 0.0);
+	trace.normal = Normal(0.0, 1.0, 1.0);
+	trace.normal.normalise();
+
+	trace.pixelColour = light.getLightInfo(trace);
+	EXPECT_NEAR(trace.pixelColour.r, 2.121, 0.001);
+	EXPECT_NEAR(trace.pixelColour.g, 2.121, 0.001);
+	EXPECT_NEAR(trace.pixelColour.b, 2.121, 0.001);
+}
 
 /*testing World.h*/
-
-TEST(worldFunc, sphereCreate) //will have to rework once I have a unified tracer
-{
-	World scene;
-	scene.sphere.setCenter(0, 0, 0);
-	scene.sphere.setColour(1.0, 0.0, 0.0);
-	Sphere test = scene.sphere;
-	
-	EXPECT_EQ(test.getColour().r, scene.sphere.getColour().r);
-}
 
 TEST(worldFunc, addObject)
 {
 	World scene;
 	Sphere* sphere = new Sphere();
-	sphere->setColour(1.0, 1.0, 0.0);
-	sphere->setCenter(0, 0, 0);
-	sphere->setRadius(50);
+	sphere->shader = new Lambert(1.0, 1.0, 0.0, 0.18);
 	scene.addObject(sphere);
 
-	EXPECT_EQ(scene.objects[0]->getColour().r, 1.0);
-	EXPECT_EQ(scene.objects[0]->getColour().g, 1.0);
-	EXPECT_EQ(scene.objects[0]->getColour().b, 0.0);
+	EXPECT_EQ(scene.objects[0]->shader->getColour().r, 1.0);
+	EXPECT_EQ(scene.objects[0]->shader->getColour().g, 1.0);
+	EXPECT_EQ(scene.objects[0]->shader->getColour().b, 0.0);
+}
+
+TEST(worldFunc, addLight)
+{
+	World scene;
+	Directional* light = new Directional();
+	scene.addLight(light);
+
+	EXPECT_EQ(scene.lights.size(), 1);
 }
 
 TEST(worldFunc, backgroundColour)
 {
 	World scene;
 	
-	EXPECT_EQ(scene.backgroundColor.r, 0.0);
-	EXPECT_EQ(scene.backgroundColor.g, 0.0);
-	EXPECT_EQ(scene.backgroundColor.b, 0.0);
+	EXPECT_EQ(scene.backgroundColour.r, 0.0);
+	EXPECT_EQ(scene.backgroundColour.g, 0.0);
+	EXPECT_EQ(scene.backgroundColour.b, 0.0);
 }
 
 TEST(worldFunc, build)
 {
 	World scene;
 	scene.build();
-	Ray ray(Point3D(0, 0, 0), Vector3D(0, 0, -1));
 
-	EXPECT_EQ(scene.tracerPtr->traceRay(ray).r, 1.0);
-	EXPECT_EQ(scene.tracerPtr->traceRay(ray).g, 0.0);
-	EXPECT_EQ(scene.tracerPtr->traceRay(ray).b, 0.0);
+	EXPECT_EQ(scene.objects.size(), 6);
+	EXPECT_EQ(scene.lights.size(), 2);
+}
+
+TEST(worldFunc, collision)
+{
+	World scene;
+	scene.build();
+	
+	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
+	Tracer trace = scene.objCollision(ray);
+
+	EXPECT_EQ(trace.hitObject, true);
+	EXPECT_EQ(trace.hitPoint.x, 0);
+	EXPECT_EQ(trace.hitPoint.y, 0);
+	EXPECT_EQ(trace.hitPoint.z, -100);
+	EXPECT_EQ(trace.normal.x, 0);
+	EXPECT_EQ(trace.normal.y, 0);
+	EXPECT_EQ(trace.normal.z, 1.0);
 }
 
 /*testing GraphicsWindow.h*/
-
-TEST(graphicsFunc, copyConstructor)
-{
-	GraphicsWindow viewplane;
-	GraphicsWindow viewCopy(viewplane);
-
-	EXPECT_EQ(viewplane.gamma, viewCopy.gamma);
-	EXPECT_EQ(viewplane.invGamma, viewCopy.invGamma);
-	EXPECT_EQ(viewplane.ifOutOfGamut, viewCopy.ifOutOfGamut);
-}
-
-TEST(graphicsFunc, assignmentOperator)
-{
-	GraphicsWindow viewplane;
-	GraphicsWindow viewCopy = viewplane;
-
-	EXPECT_EQ(viewplane.gamma, viewCopy.gamma);
-	EXPECT_EQ(viewplane.invGamma, viewCopy.invGamma);
-	EXPECT_EQ(viewplane.ifOutOfGamut, viewCopy.ifOutOfGamut);
-}
-
-TEST(graphicsFunc, gamma)
-{
-	GraphicsWindow viewplane;
-	viewplane.setGamma(0.5);
-
-	EXPECT_EQ(viewplane.gamma, 0.5);
-	EXPECT_EQ(viewplane.invGamma, 2.0);
-}
-
-TEST(graphicsFunc, gamut)
-{
-	GraphicsWindow viewplane;
-	viewplane.setGamutDisplay(true);
-
-	EXPECT_EQ(viewplane.ifOutOfGamut, true);
-}
 
 TEST(graphicsFunc, max)
 {
@@ -1486,16 +1557,6 @@ TEST(graphicsFunc, max)
 	EXPECT_EQ(viewplane.maxToOne(colour).r, 1.0);
 	EXPECT_NEAR(viewplane.maxToOne(colour).g, 0.416667, 0.001);
 	EXPECT_NEAR(viewplane.maxToOne(colour).b, 0.666667, 0.001);
-}
-
-TEST(graphicsFunc, clamp)
-{
-	GraphicsWindow viewplane;
-	RGBColour colour(1.2, 1.1, 1.4);
-
-	EXPECT_EQ(viewplane.clampToColour(colour).r, 1.0);
-	EXPECT_EQ(viewplane.clampToColour(colour).g, 0.0);
-	EXPECT_EQ(viewplane.clampToColour(colour).b, 0.0);
 }
 
 int main(int argc, char **argv)

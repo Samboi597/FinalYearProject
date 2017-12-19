@@ -1,25 +1,14 @@
 #include "Tracer.h"
 
-Tracer::Tracer() : worldPtr(NULL)
+Tracer::Tracer() : hitObject(false), hitPoint(), normal(), pixelColour(black)
 {
 }
 
-Tracer::Tracer(World * _world_ptr) : worldPtr(_world_ptr)
+Tracer::Tracer(const Tracer & _tracer) : hitObject(_tracer.hitObject), hitPoint(_tracer.hitPoint), 
+normal(_tracer.normal), pixelColour(_tracer.pixelColour)
 {
 }
 
 Tracer::~Tracer()
 {
-	if (worldPtr)
-		worldPtr = NULL;
-}
-
-RGBColour Tracer::traceRay(const Ray & ray) const
-{
-	return black;
-}
-
-RGBColour Tracer::traceRay(const Ray ray, const int depth) const
-{
-	return black;
 }

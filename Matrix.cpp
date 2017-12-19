@@ -31,9 +31,9 @@ Matrix::Matrix(const Matrix& mat) //copy constructor
 
 Matrix::~Matrix() {} //destructor
 
-Matrix & Matrix::operator=(const Matrix & rhs) //assignment operator
+Matrix & Matrix::operator=(const Matrix & rightSide) //assignment operator
 {
-	if (this == &rhs)
+	if (this == &rightSide)
 	{
 		return (*this);
 	}
@@ -42,14 +42,14 @@ Matrix & Matrix::operator=(const Matrix & rhs) //assignment operator
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			m[x][y] = rhs.m[x][y];
+			m[x][y] = rightSide.m[x][y];
 		}
 	}
 
 	return (*this);
 }
 
-Matrix Matrix::operator*(const Matrix & mat) const //multiplication operator
+Matrix Matrix::operator*(const Matrix & matrix) const //multiplication operator
 {
 	Matrix product;
 	for (int y = 0; y < 4; y++)
@@ -60,7 +60,7 @@ Matrix Matrix::operator*(const Matrix & mat) const //multiplication operator
 
 			for (int j = 0; j < 4; j++)
 			{
-				sum += m[x][j] * mat.m[j][y];
+				sum += m[x][j] * matrix.m[j][y];
 			}
 			product.m[x][y] = sum;
 		}

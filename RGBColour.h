@@ -18,7 +18,7 @@ public:
 	RGBColour& operator/= (const float a);
 	RGBColour operator* (const RGBColour& c) const;
 	bool operator== (const RGBColour& c) const;
-	RGBColour powc(float p) const;
+	RGBColour powc(double p) const;
 	float average() const;
 };
 

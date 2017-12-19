@@ -1,5 +1,6 @@
 #include "Sphere.h"
 #include "math.h"
+#include <stdio.h>
 const double Sphere::kEpsilon = 0.001;
 
 Sphere::Sphere() : GeometricObject(), center(0.0), radius(1.0) //default constructor
@@ -16,7 +17,7 @@ Sphere::Sphere(const Sphere & sphere) : GeometricObject(sphere), center(sphere.c
 
 Sphere * Sphere::clone() const
 {
-	return (new Sphere(*this));
+	return new Sphere(*this);
 }
 
 Sphere::~Sphere() //destructor
@@ -27,16 +28,16 @@ Sphere & Sphere::operator=(const Sphere & sphere) //assignment operator
 {
 	if (this == &sphere)
 	{
-		return (*this);
+		return *this;
 	}
 
 	GeometricObject::operator=(sphere);
 	center = sphere.center;
 	radius = sphere.radius;
-	return (*this);
+	return *this;
 }
 
-bool Sphere::hit(const Ray & ray, double & tmin, ShadeRec & s) const
+bool Sphere::hit(const Ray & ray, double & tmin, Tracer & tr) const
 {
 	double t;
 	Vector3D temp = ray.o - center;
@@ -47,7 +48,7 @@ bool Sphere::hit(const Ray & ray, double & tmin, ShadeRec & s) const
 
 	if (disc < 0.0)
 	{
-		return(false);
+		return false;
 	}
 	else 
 	{
@@ -58,19 +59,19 @@ bool Sphere::hit(const Ray & ray, double & tmin, ShadeRec & s) const
 		if (t > kEpsilon) 
 		{
 			tmin = t;
-			s.normal = (temp + t * ray.d) / radius;
-			s.localHitPoint = ray.o + t * ray.d;
-			return (true);
+			tr.normal = (temp + t * ray.d) / radius;
+			tr.hitPoint = ray.o + t * ray.d;
+			return true;
 		}
 
 		t = (-b + e) / denom;    // larger root
 		if (t > kEpsilon) 
 		{
 			tmin = t;
-			s.normal = (temp + t * ray.d) / radius;
-			s.localHitPoint = ray.o + t * ray.d;
-			return (true);
+			tr.normal = (temp + t * ray.d) / radius;
+			tr.hitPoint = ray.o + t * ray.d;
+			return true;
 		}
 	}
-	return (false);
+	return false;
 }

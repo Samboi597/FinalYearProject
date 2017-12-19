@@ -32,7 +32,7 @@ RGBColour& RGBColour::operator= (const RGBColour& rhs) //assignment operator
 	return (*this);
 }
 
-RGBColour RGBColour::powc(float p) const //raise to specified power
+RGBColour RGBColour::powc(double p) const //raise to specified power
 {
 	return (RGBColour(pow(r, p), pow(g, p), pow(b, p)));
 }

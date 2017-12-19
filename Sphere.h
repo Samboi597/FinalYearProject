@@ -1,5 +1,6 @@
 #pragma once
 #include "GeometricObject.h"
+#include "Tracer.h"
 
 class Sphere : public GeometricObject
 {
@@ -13,12 +14,11 @@ public:
 	Sphere(const Sphere& sphere);
 	virtual Sphere* clone() const;
 	virtual ~Sphere();
-
 	Sphere& operator= (const Sphere& sphere);
 	void setCenter(const Point3D& c);
 	void setCenter(const double x, const double y, const double z);
 	void setRadius(const double r);
-	virtual bool hit(const Ray& ray, double& tmin, ShadeRec& s) const;
+	virtual bool hit(const Ray& ray, double& tmin, Tracer& tr) const;
 };
 
 inline void Sphere::setCenter(const Point3D& c) 
