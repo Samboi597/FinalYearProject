@@ -1,4 +1,8 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Disk.h"
+#include <math.h>
 
 Disk::Disk() : GeometricObject(), center(0.0), n(0.0, 1.0, 0.0), radius(1.0), radiusSquared(1.0)
 {
@@ -41,6 +45,18 @@ bool Disk::hit(const Ray & ray, double & tmin, Tracer & tr) const
 	}
 
 	return false;
+}
+
+Point3D Disk::maxBoundCoords() const
+{
+	return Point3D(center.x + (radius * sqrt(1.0 - (n.x * n.x))), center.y + (radius * sqrt(1.0 - (n.y * n.y))),
+		center.z + (radius * sqrt(1.0 - (n.z * n.z))));
+}
+
+Point3D Disk::minBoundCoords() const
+{
+	return Point3D(center.x - (radius * sqrt(1.0 - (n.x * n.x))), center.y - (radius * sqrt(1.0 - (n.y * n.y))),
+		center.z - (radius * sqrt(1.0 - (n.z * n.z))));
 }
 
 Disk & Disk::operator=(const Disk & rightSide)

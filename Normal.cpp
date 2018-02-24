@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include <math.h>
 #include "Normal.h"
 
@@ -29,23 +32,23 @@ Normal & Normal::operator=(const Normal & rhs) //assignment operator
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 Normal & Normal::operator=(const Vector3D & rhs) //assignment of vector to normal
 {
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 Normal & Normal::operator=(const Point3D & rhs) //assignment of point to normal
 {
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 void Normal::normalise() //convert vector length to 1
@@ -56,7 +59,7 @@ void Normal::normalise() //convert vector length to 1
 
 Normal operator* (const Matrix& mat, const Normal& n) //multiplication by matrix on left
 {
-	return (Normal(mat.m[0][0] * n.x + mat.m[1][0] * n.y + mat.m[2][0] * n.z,
+	return Normal(mat.m[0][0] * n.x + mat.m[1][0] * n.y + mat.m[2][0] * n.z,
 		mat.m[0][1] * n.x + mat.m[1][1] * n.y + mat.m[2][1] * n.z,
-		mat.m[0][2] * n.x + mat.m[1][2] * n.y + mat.m[2][2] * n.z));
+		mat.m[0][2] * n.x + mat.m[1][2] * n.y + mat.m[2][2] * n.z);
 }

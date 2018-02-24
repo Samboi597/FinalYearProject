@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "RGBColour.h"
 const int SCREEN_WIDTH = 500;

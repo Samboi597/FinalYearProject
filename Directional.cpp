@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Directional.h"
 
 Directional::Directional() : Lighting(), direction(0.0f, 1.0f, 0.0f)

@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "Point3D.h"
 #include "Vector3D.h"

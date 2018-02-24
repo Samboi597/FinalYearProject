@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "Matrix.h"
 #include "Vector3D.h"
@@ -24,27 +27,27 @@ public:
 
 inline Point3D Point3D::operator- (void) const //minus point
 {
-	return (Point3D(-x, -y, -z));
+	return Point3D(-x, -y, -z);
 }
 
 inline Vector3D Point3D::operator- (const Point3D& p) const //vector between two points
 {
-	return (Vector3D(x - p.x, y - p.y, z - p.z));
+	return Vector3D(x - p.x, y - p.y, z - p.z);
 }
 
 inline Point3D Point3D::operator+ (const Vector3D& v) const //addition of vector and point
 {
-	return (Point3D(x + v.x, y + v.y, z + v.z));
+	return Point3D(x + v.x, y + v.y, z + v.z);
 }
 
 inline Point3D Point3D::operator- (const Vector3D& v) const //subtraction of vector from point
 {
-	return (Point3D(x - v.x, y - v.y, z - v.z));
+	return Point3D(x - v.x, y - v.y, z - v.z);
 }
 
 inline Point3D Point3D::operator* (const double a) const //multiplication by double on right
 {
-	return (Point3D(x * a, y * a, z * a));
+	return Point3D(x * a, y * a, z * a);
 }
 
 inline double Point3D::dSquared(const Point3D& p) const //squared distance between two points
@@ -56,7 +59,7 @@ Point3D operator* (double a, const Point3D& p);
 
 inline Point3D operator* (double a, const Point3D& p) //multiplication by double on left
 {
-	return (Point3D(a * p.x, a * p.y, a * p.z));
+	return Point3D(a * p.x, a * p.y, a * p.z);
 }
 
 Point3D operator* (const Matrix& mat, const Point3D& p);

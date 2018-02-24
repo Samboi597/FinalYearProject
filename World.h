@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include <vector>
 #include "GraphicsWindow.h"
@@ -6,6 +9,7 @@
 #include "Tracer.h"
 #include "Ray.h"
 #include "GeometricObject.h"
+#include "AccelerationStructure.h"
 using namespace std;
 
 class World
@@ -20,11 +24,12 @@ public:
 	vector<GeometricObject*> objects;
 	vector<Lighting*> lights;
 	RGBColour backgroundColour;
+	AccelerationStructure bvh;
 
 	void addObject(GeometricObject* objectPtr);
 	void addLight(Lighting* lightPtr);
 	void build();
-	Tracer objCollision(const Ray& ray);
+	RGBColour objCollision(const Ray& ray);
 };
 
 inline void World::addObject(GeometricObject * objectPtr)

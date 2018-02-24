@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
@@ -41,13 +44,12 @@ void renderScene()
 	float zw = 100.0;			// hardwired in
 
 	ray.d = Vector3D(0, 0, -1);
-	printf("Collision tests: %d\n", SCREEN_HEIGHT*SCREEN_WIDTH*tracerScene.objects.size());
 
 	for (int r = 0; r < SCREEN_HEIGHT; r++) // up
 		for (int c = 0; c <= SCREEN_WIDTH; c++) // across 	
 		{
 			ray.o = Point3D(1 * (c - SCREEN_WIDTH / 2.0 + 0.5), 1 * (r - SCREEN_HEIGHT / 2.0 + 0.5), zw);
-			pixelColor = tracerScene.objCollision(ray).pixelColour;
+			pixelColor = tracerScene.objCollision(ray);
 			graphics.displayPixel(r, c, pixelColor);
 		}
 

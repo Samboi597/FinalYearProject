@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "ShadingInfo.h"
 
 ShadingInfo::ShadingInfo() : colour(0.0, 0.0, 0.0), albedo(0.18)

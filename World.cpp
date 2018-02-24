@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 //include opengl page
 
 #include "World.h"
@@ -32,6 +35,8 @@ World::World() : backgroundColour(black)
 
 World::~World()
 {
+	printf("Total collisions: %d\n", bvh.totalCol);
+	printf("Successful collisions: %d\n", bvh.successCol);
 	deleteObjects();
 	deleteLights();
 }
@@ -40,15 +45,15 @@ void World::build()
 {
 	clock_t t = clock();
 	backgroundColour = RGBColour(0.0);
-
+	
 	Sphere* sphere1 = new Sphere(Point3D(-150, 150, 0), 100);
 	sphere1->shader = new Lambert(1.0, 0.0, 0.0, 0.18);
 	addObject(sphere1);
-
+	
 	Sphere* sphere2 = new Sphere(Point3D(0, 0, 0), 100);
 	sphere2->shader = new Lambert(0.0, 1.0, 0.0, 0.18);
 	addObject(sphere2);
-
+	
 	Sphere* sphere3 = new Sphere(Point3D(150, -150, 0), 100);
 	sphere3->shader = new Lambert(0.0, 0.0, 1.0, 0.18);
 	addObject(sphere3);
@@ -60,11 +65,11 @@ void World::build()
 	Disk* disk1 = new Disk(Point3D(150, 150, 0), Normal(1.0, -1.0, 1.0), 100);
 	disk1->shader = new Lambert(1, 1, 0, 0.18);
 	addObject(disk1);
-
+	
 	Disk* disk2 = new Disk(Point3D(-150, -150, 0), Normal(-1.0, 1.0, 1.0), 100);
 	disk2->shader = new Lambert(1, 0, 1, 0.18);
 	addObject(disk2);
-
+	
 	Directional* light = new Directional();
 	light->setColour(1.0, 1.0, 1.0);
 	light->setIntensity(6.0);
@@ -77,43 +82,34 @@ void World::build()
 	light2->setDirection(-1.0, 1.0, -1.0);
 	addLight(light2);
 
+	bvh.build(objects);
+
 	t = clock() - t;
 	printf("Scene building time: %f ms\n", (float)(t));
 }
 
-int collisions = 0;
-Tracer World::objCollision(const Ray & ray)
+RGBColour World::objCollision(const Ray & ray)
 {
 	Tracer tr;
-	double t;
-	float tmin = kHugeValue;
-	int numObjects = objects.size();
+	bvh.search(ray);
+	tr = bvh.tr;
 
-	for (int j = 0; j < numObjects; j++)
+	RGBColour pixel = black;
+	if (tr.hitObject)
 	{
-		if (objects[j]->hit(ray, t, tr) && (t < tmin))
+		int numLights = lights.size();
+		for (int i = 0; i < numLights; i++)
 		{
-			collisions++;
-			tr.hitObject = true;
-			tmin = t;
-			tr.pixelColour = black;
-			int numLights = lights.size();
-			for (int i = 0; i < numLights; i++)
-			{
-				tr.pixelColour += (lights[i]->getLightInfo(tr) * objects[j]->shader->getReflectedColour(tr));
-			}
+			pixel += (lights[i]->getLightInfo(tr) * tr.pixelColour);
 		}
 	}
 
-	if (tr.hitObject == false)
-		tr.pixelColour = backgroundColour;
-	return tr;
+	return pixel;
 }
 
 void World::deleteObjects()
 {
 	int numObjects = objects.size();
-	printf("Successful collisions: %d\n", collisions);
 	for (int j = 0; j < numObjects; j++)
 	{
 		delete objects[j];

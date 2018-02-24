@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Sphere.h"
 #include "math.h"
 #include <stdio.h>
@@ -74,4 +77,14 @@ bool Sphere::hit(const Ray & ray, double & tmin, Tracer & tr) const
 		}
 	}
 	return false;
+}
+
+Point3D Sphere::maxBoundCoords() const
+{
+	return Point3D(center.x + radius, center.y + radius, center.z + radius);
+}
+
+Point3D Sphere::minBoundCoords() const
+{
+	return Point3D(center.x - radius, center.y - radius, center.z - radius);
 }

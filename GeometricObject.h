@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "RGBColour.h"
 #include "Point3D.h"
@@ -18,5 +21,7 @@ public:
 	virtual ~GeometricObject();
 	ShadingInfo* shader;
 
+	virtual Point3D maxBoundCoords() const = 0;
+	virtual Point3D minBoundCoords() const = 0;
 	virtual bool hit(const Ray& ray, double& t, Tracer& tr) const = 0;
 };

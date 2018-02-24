@@ -1401,6 +1401,26 @@ TEST(sphereFunc, rayCollision)
 	EXPECT_EQ(sphere.hit(ray, t, trace), true);
 }
 
+TEST(sphereFunc, maxCoords)
+{
+	Sphere sphere(Point3D(0.0, 0.0, 0.0), 10.0);
+	Point3D maxCoords = sphere.maxBoundCoords();
+	
+	EXPECT_EQ(maxCoords.x, 10.0);
+	EXPECT_EQ(maxCoords.y, 10.0);
+	EXPECT_EQ(maxCoords.z, 10.0);
+}
+
+TEST(sphereFunc, minCoords)
+{
+	Sphere sphere(Point3D(0.0, 0.0, 0.0), 10.0);
+	Point3D minCoords = sphere.minBoundCoords();
+
+	EXPECT_EQ(minCoords.x, -10.0);
+	EXPECT_EQ(minCoords.y, -10.0);
+	EXPECT_EQ(minCoords.z, -10.0);
+}
+
 /*testing Plane.h*/
 
 TEST(planeFunc, clone)
@@ -1435,6 +1455,26 @@ TEST(planeFunc, rayCollision)
 	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
 
 	EXPECT_EQ(plane.hit(ray, t, trace), true);
+}
+
+TEST(planeFunc, maxCoords)
+{
+	Plane plane;
+	Point3D maxCoords = plane.maxBoundCoords();
+
+	EXPECT_EQ(maxCoords.x, 250);
+	EXPECT_EQ(maxCoords.y, 250);
+	EXPECT_EQ(maxCoords.z, 100);
+}
+
+TEST(planeFunc, minCoords)
+{
+	Plane plane;
+	Point3D minCoords = plane.minBoundCoords();
+
+	EXPECT_EQ(minCoords.x, -250);
+	EXPECT_EQ(minCoords.y, -250);
+	EXPECT_EQ(minCoords.z, -100);
 }
 
 /*testing Disk.h*/
@@ -1473,6 +1513,26 @@ TEST(diskFunc, rayCollision)
 	EXPECT_EQ(disk.hit(ray, t, trace), true);
 }
 
+TEST(diskFunc, maxCoords)
+{
+	Disk disk(Point3D(0, 0, 0), Normal(1.0, -1.0, 1.0), 100);
+	Point3D maxCoords = disk.maxBoundCoords();
+
+	EXPECT_NEAR(maxCoords.x, 81.67, 1);
+	EXPECT_NEAR(maxCoords.y, 81.67, 1);
+	EXPECT_NEAR(maxCoords.z, 81.67, 1);
+}
+
+TEST(diskFunc, minCoords)
+{
+	Disk disk(Point3D(0, 0, 0), Normal(1.0, -1.0, 1.0), 100);
+	Point3D minCoords = disk.minBoundCoords();
+
+	EXPECT_NEAR(minCoords.x, -81.67, 1);
+	EXPECT_NEAR(minCoords.y, -81.67, 1);
+	EXPECT_NEAR(minCoords.z, -81.67, 1);
+}
+
 /*testing Directional.h*/
 
 TEST(directionalFunc, getLighting)
@@ -1487,6 +1547,55 @@ TEST(directionalFunc, getLighting)
 	EXPECT_NEAR(trace.pixelColour.r, 2.121, 0.001);
 	EXPECT_NEAR(trace.pixelColour.g, 2.121, 0.001);
 	EXPECT_NEAR(trace.pixelColour.b, 2.121, 0.001);
+}
+
+/*testing AccelerationStructure.h*/
+
+TEST(structureFunc, search)
+{
+	AccelerationStructure hierarchy;
+	vector<GeometricObject*> objects;
+
+	Sphere* sphere2 = new Sphere(Point3D(0, 0, 0), 100);
+	sphere2->shader = new Lambert(0.0, 1.0, 0.0, 0.18);
+	objects.push_back(sphere2);
+
+	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
+
+	hierarchy.build(objects);
+	hierarchy.search(ray);
+
+	EXPECT_EQ(hierarchy.tr.hitObject, true);
+
+	EXPECT_NEAR(hierarchy.tr.hitPoint.x, 0.0, 0.001);
+	EXPECT_NEAR(hierarchy.tr.hitPoint.y, 0.0, 0.001);
+	EXPECT_NEAR(hierarchy.tr.hitPoint.z, -100.0, 0.001);
+
+	EXPECT_NEAR(hierarchy.tr.normal.x, 0.0, 0.001);
+	EXPECT_NEAR(hierarchy.tr.normal.y, 0.0, 0.001);
+	EXPECT_NEAR(hierarchy.tr.normal.z, -1.0, 0.001);
+
+	EXPECT_NEAR(hierarchy.tr.pixelColour.r, 0.0, 0.001);
+	EXPECT_NEAR(hierarchy.tr.pixelColour.g, 0.18, 0.001);
+	EXPECT_NEAR(hierarchy.tr.pixelColour.b, 0.0, 0.001);
+}
+
+TEST(structureFunc, collisionsNum)
+{
+	AccelerationStructure hierarchy;
+	vector<GeometricObject*> objects;
+
+	Sphere* sphere2 = new Sphere(Point3D(0, 0, 0), 100);
+	sphere2->shader = new Lambert(0.0, 1.0, 0.0, 0.18);
+	objects.push_back(sphere2);
+
+	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
+
+	hierarchy.build(objects);
+	hierarchy.search(ray);
+
+	EXPECT_EQ(hierarchy.totalCol, 1);
+	EXPECT_EQ(hierarchy.successCol, 1);
 }
 
 /*testing World.h*/
@@ -1526,7 +1635,7 @@ TEST(worldFunc, build)
 	World scene;
 	scene.build();
 
-	EXPECT_EQ(scene.objects.size(), 6);
+	EXPECT_EQ(scene.objects.size(), 0);
 	EXPECT_EQ(scene.lights.size(), 2);
 }
 
@@ -1534,17 +1643,12 @@ TEST(worldFunc, collision)
 {
 	World scene;
 	scene.build();
-	
-	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -1.0));
-	Tracer trace = scene.objCollision(ray);
+	Ray ray(Point3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, -100.0));
+	RGBColour pixel = scene.objCollision(ray);
 
-	EXPECT_EQ(trace.hitObject, true);
-	EXPECT_EQ(trace.hitPoint.x, 0);
-	EXPECT_EQ(trace.hitPoint.y, 0);
-	EXPECT_EQ(trace.hitPoint.z, -100);
-	EXPECT_EQ(trace.normal.x, 0);
-	EXPECT_EQ(trace.normal.y, 0);
-	EXPECT_EQ(trace.normal.z, 1.0);
+	EXPECT_NEAR(pixel.r, 0.0, 0.001);
+	EXPECT_NEAR(pixel.g, 0.0, 0.001);
+	EXPECT_NEAR(pixel.b, 0.0, 0.001);
 }
 
 /*testing GraphicsWindow.h*/

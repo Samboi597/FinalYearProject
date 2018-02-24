@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Plane.h"
 const double Plane::kEpsilon = 0.001;
 
@@ -48,4 +51,24 @@ bool Plane::hit(const Ray & ray, double & tmin, Tracer & tr) const
 	}
 
 	return false;
+}
+
+//plane is infinite
+//so there is almost no use in trying to
+//calculate a bounding volume for it
+
+Point3D Plane::maxBoundCoords() const
+{
+	return Point3D(250, 250, 100);
+	//hardwired in
+	//based upon the screen resolution
+	//and the pixel ray's origin along the z-axis
+}
+
+Point3D Plane::minBoundCoords() const
+{
+	return Point3D(-250, -250, -100);
+	//hardwired in
+	//based upon the screen resolution
+	//and the pixel ray's origin along the z-axis
 }

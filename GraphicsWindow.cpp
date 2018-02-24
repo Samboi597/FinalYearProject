@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "GraphicsWindow.h"
 #include "World.h"
 #include "Maths.h"
@@ -39,11 +42,11 @@ GraphicsWindow & GraphicsWindow::operator=(const GraphicsWindow & rhs)
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	colourBuffer = rhs.colourBuffer;
-	return (*this);
+	return *this;
 }
 
 void GraphicsWindow::displayPixel(const int row, const int column, const RGBColour & pixel_color)

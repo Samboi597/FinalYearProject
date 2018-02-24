@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Lambert.h"
 
 Lambert::Lambert() : ShadingInfo()

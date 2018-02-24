@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "Matrix.h"
 #include "Vector3D.h"
@@ -27,18 +30,18 @@ public:
 
 inline Normal Normal::operator- (void) const //negative normal 
 {
-	return (Normal(-x, -y, -z));
+	return Normal(-x, -y, -z);
 }
 
 inline Normal Normal::operator+ (const Normal& n) const //normal addition
 {
-	return (Normal(x + n.x, y + n.y, z + n.z));
+	return Normal(x + n.x, y + n.y, z + n.z);
 }
 
 inline Normal& Normal::operator+= (const Normal& n) //compound normal addition
 {
 	x += n.x; y += n.y; z += n.z;
-	return (*this);
+	return *this;
 }
 
 inline double Normal::operator* (const Vector3D& v) const //normal left, vector right
@@ -48,14 +51,14 @@ inline double Normal::operator* (const Vector3D& v) const //normal left, vector 
 
 inline Normal Normal::operator* (const double a) const //double multiplication on right
 {
-	return (Normal(x * a, y * a, z * a));
+	return Normal(x * a, y * a, z * a);
 }
 
 Normal operator* (const double a, const Normal& n);
 
 inline Normal operator*(const double f, const Normal& n) //double mulitiplication on left 
 {
-	return (Normal(f * n.x, f * n.y, f * n.z));
+	return Normal(f * n.x, f * n.y, f * n.z);
 }
 
 Vector3D operator+ (const Vector3D& v, const Normal& n);
@@ -63,14 +66,14 @@ Vector3D operator+ (const Vector3D& v, const Normal& n);
 inline Vector3D
 operator+ (const Vector3D& v, const Normal& n) //add to a vector on left
 {
-	return (Vector3D(v.x + n.x, v.y + n.y, v.z + n.z));
+	return Vector3D(v.x + n.x, v.y + n.y, v.z + n.z);
 }
 
 Vector3D operator- (const Vector3D&, const Normal& n);
 
 inline Vector3D operator- (const Vector3D& v, const Normal& n) //subtract a vector on the left
 {
-	return (Vector3D(v.x - n.x, v.y - n.y, v.z - n.z));
+	return Vector3D(v.x - n.x, v.y - n.y, v.z - n.z);
 }
 
 double operator* (const Vector3D& v, const Normal& n);

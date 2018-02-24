@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Matrix.h"
 
 Matrix::Matrix() //constructor
@@ -35,7 +38,7 @@ Matrix & Matrix::operator=(const Matrix & rightSide) //assignment operator
 {
 	if (this == &rightSide)
 	{
-		return (*this);
+		return *this;
 	}
 
 	for (int x = 0; x < 4; x++)
@@ -46,7 +49,7 @@ Matrix & Matrix::operator=(const Matrix & rightSide) //assignment operator
 		}
 	}
 
-	return (*this);
+	return *this;
 }
 
 Matrix Matrix::operator*(const Matrix & matrix) const //multiplication operator
@@ -65,7 +68,7 @@ Matrix Matrix::operator*(const Matrix & matrix) const //multiplication operator
 			product.m[x][y] = sum;
 		}
 	}
-	return (product);
+	return product;
 }
 
 Matrix Matrix::operator/(const double d) //division operator (by a double)
@@ -77,7 +80,7 @@ Matrix Matrix::operator/(const double d) //division operator (by a double)
 			m[x][y] /= d;
 		}
 	}
-	return (*this);
+	return *this;
 }
 
 void Matrix::setIdentity() //set to identity matrix

@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Constants.h"
 #include "GeometricObject.h"
 #include <stdio.h>

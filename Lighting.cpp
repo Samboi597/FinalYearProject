@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Lighting.h"
 
 Lighting::Lighting() : intensity(1.0f), colour(white)

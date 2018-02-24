@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "GeometricObject.h"
 
@@ -18,6 +21,9 @@ public:
 	virtual Disk* clone() const;
 	void setRadius(const double r);
 	virtual bool hit(const Ray& ray, double& tmin, Tracer& tr) const;
+	virtual Point3D maxBoundCoords() const;
+	virtual Point3D minBoundCoords() const;
+
 	Disk& operator=(const Disk& rightSide);
 };
 

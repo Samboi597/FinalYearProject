@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Tracer.h"
 
 Tracer::Tracer() : hitObject(false), hitPoint(), normal(), pixelColour(black)

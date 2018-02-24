@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include "Ray.h"
 
 Ray::Ray() : o(0.0), d(0.0, 0.0, 1.0) //default constructor
@@ -20,10 +23,10 @@ Ray& Ray::operator= (const Ray& rhs) //assignment operator
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	o = rhs.o;
 	d = rhs.d;
-	return (*this);
+	return *this;
 }

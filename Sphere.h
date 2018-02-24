@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "GeometricObject.h"
 #include "Tracer.h"
@@ -8,6 +11,7 @@ private:
 	Point3D center;
 	double radius;
 	static const double kEpsilon; //for shadows and secondary rays
+
 public:
 	Sphere();
 	Sphere(Point3D c, double r);
@@ -15,10 +19,13 @@ public:
 	virtual Sphere* clone() const;
 	virtual ~Sphere();
 	Sphere& operator= (const Sphere& sphere);
+
 	void setCenter(const Point3D& c);
 	void setCenter(const double x, const double y, const double z);
 	void setRadius(const double r);
 	virtual bool hit(const Ray& ray, double& tmin, Tracer& tr) const;
+	virtual Point3D maxBoundCoords() const;
+	virtual Point3D minBoundCoords() const;
 };
 
 inline void Sphere::setCenter(const Point3D& c) 

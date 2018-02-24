@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include <math.h>
 #include "Point3D.h"
 
@@ -25,11 +28,11 @@ Point3D& Point3D::operator= (const Point3D& rhs) //assignment operator
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 double Point3D::distance(const Point3D& p) const //distance between two points
@@ -41,7 +44,7 @@ double Point3D::distance(const Point3D& p) const //distance between two points
 
 Point3D operator* (const Matrix& mat, const Point3D& p) //mulitplication by matrix on left
 {
-	return (Point3D(mat.m[0][0] * p.x + mat.m[0][1] * p.y + mat.m[0][2] * p.z + mat.m[0][3],
+	return Point3D(mat.m[0][0] * p.x + mat.m[0][1] * p.y + mat.m[0][2] * p.z + mat.m[0][3],
 		mat.m[1][0] * p.x + mat.m[1][1] * p.y + mat.m[1][2] * p.z + mat.m[1][3],
-		mat.m[2][0] * p.x + mat.m[2][1] * p.y + mat.m[2][2] * p.z + mat.m[2][3]));
+		mat.m[2][0] * p.x + mat.m[2][1] * p.y + mat.m[2][2] * p.z + mat.m[2][3]);
 }

@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include <math.h>
 #include "RGBColour.h"
 
@@ -25,14 +28,14 @@ RGBColour& RGBColour::operator= (const RGBColour& rhs) //assignment operator
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	r = rhs.r; g = rhs.g; b = rhs.b;
-	return (*this);
+	return *this;
 }
 
 RGBColour RGBColour::powc(double p) const //raise to specified power
 {
-	return (RGBColour(pow(r, p), pow(g, p), pow(b, p)));
+	return RGBColour(pow(r, p), pow(g, p), pow(b, p));
 }

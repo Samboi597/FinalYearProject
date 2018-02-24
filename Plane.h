@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #pragma once
 #include "GeometricObject.h"
 
@@ -7,6 +10,7 @@ private:
 	Point3D a;
 	Normal n;
 	static const double kEpsilon;
+
 public:
 	Plane();
 	Plane(const Point3D& point, const Normal& normal);
@@ -16,5 +20,7 @@ public:
 
 	Plane& operator= (const Plane& rhs);
 	virtual bool hit(const Ray& ray, double& tmin, Tracer& tr) const;
+	virtual Point3D maxBoundCoords() const;
+	virtual Point3D minBoundCoords() const;
 };
 

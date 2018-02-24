@@ -1,3 +1,6 @@
+// 2017-18 Samuel Mounter
+// All rights reserved
+
 #include <math.h>
 #include "Vector3D.h"
 #include "Normal.h"
@@ -35,28 +38,28 @@ Vector3D& Vector3D::operator= (const Vector3D& rhs) //assignment operator
 {
 	if (this == &rhs)
 	{
-		return (*this);
+		return *this;
 	}
 
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 Vector3D& Vector3D::operator= (const Normal& rhs) //assign normal to vector
 {
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 Vector3D& Vector3D::operator= (const Point3D& rhs) //assign point to vector
 {
 	x = rhs.x; y = rhs.y; z = rhs.z;
-	return (*this);
+	return *this;
 }
 
 double Vector3D::length(void) //vector length
 {
-	return (sqrt(x * x + y * y + z * z));
+	return sqrt(x * x + y * y + z * z);
 }
 
 void Vector3D::normalise(void) //converts to unit vector
@@ -69,12 +72,12 @@ Vector3D& Vector3D::hat(void) //converts to unit vector and returns it
 {
 	double length = sqrt(x * x + y * y + z * z);
 	x /= length; y /= length; z /= length;
-	return (*this);
+	return *this;
 }
 
 Vector3D operator* (const Matrix& mat, const Vector3D& v) //multiplication by matrix on left
 {
-	return (Point3D(mat.m[0][0] * v.x + mat.m[0][1] * v.y + mat.m[0][2] * v.z,
+	return Point3D(mat.m[0][0] * v.x + mat.m[0][1] * v.y + mat.m[0][2] * v.z,
 		mat.m[1][0] * v.x + mat.m[1][1] * v.y + mat.m[1][2] * v.z,
-		mat.m[2][0] * v.x + mat.m[2][1] * v.y + mat.m[2][2] * v.z));
+		mat.m[2][0] * v.x + mat.m[2][1] * v.y + mat.m[2][2] * v.z);
 }
