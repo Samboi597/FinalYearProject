@@ -1533,6 +1533,30 @@ TEST(diskFunc, minCoords)
 	EXPECT_NEAR(minCoords.z, -81.67, 1);
 }
 
+/*testing Polygon.h*/
+
+TEST(polygonFunc, minCoords)
+{
+	Polygon test(Point3D(0.0, 0.0, 0.0), Point3D(100.0, 0.0, 0.0), Point3D(100.0, 100.0, 0.0), 
+		Normal(0.0, 0.0, 1.0), Normal(0.0, 0.0, 1.0), Normal(0.0, 0.0, 1.0));
+
+	Point3D max = test.maxBoundCoords();
+	EXPECT_NEAR(max.x, 100.0, 1.0);
+	EXPECT_NEAR(max.y, 100.0, 1.0);
+	EXPECT_NEAR(max.z, 0.0, 1.0);
+}
+
+TEST(polygonFunc, maxCoords)
+{
+	Polygon test(Point3D(0.0, 0.0, 0.0), Point3D(100.0, 0.0, 0.0), Point3D(100.0, 100.0, 0.0),
+		Normal(0.0, 0.0, 1.0), Normal(0.0, 0.0, 1.0), Normal(0.0, 0.0, 1.0));
+
+	Point3D min = test.minBoundCoords();
+	EXPECT_NEAR(min.x, 0.0, 1.0);
+	EXPECT_NEAR(min.y, 0.0, 1.0);
+	EXPECT_NEAR(min.z, 0.0, 1.0);
+}
+
 /*testing Directional.h*/
 
 TEST(directionalFunc, getLighting)
@@ -1596,6 +1620,16 @@ TEST(structureFunc, collisionsNum)
 
 	EXPECT_EQ(hierarchy.totalCol, 1);
 	EXPECT_EQ(hierarchy.successCol, 1);
+}
+
+/*testing ObjLoader.h*/
+
+TEST(loaderFunc, loadObj)
+{
+	ObjLoader loader;
+
+	EXPECT_EQ(loader.loadObj("sphere.obj"), 0);
+	EXPECT_EQ(loader.polygons.size(), 224);
 }
 
 /*testing World.h*/

@@ -10,6 +10,7 @@
 #include "Ray.h"
 #include "GeometricObject.h"
 #include "AccelerationStructure.h"
+#include "ObjLoader.h"
 using namespace std;
 
 class World
@@ -25,6 +26,7 @@ public:
 	vector<Lighting*> lights;
 	RGBColour backgroundColour;
 	AccelerationStructure bvh;
+	ObjLoader loader;
 
 	void addObject(GeometricObject* objectPtr);
 	void addLight(Lighting* lightPtr);

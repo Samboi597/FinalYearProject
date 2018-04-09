@@ -11,6 +11,7 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Disk.h"
+#include "Polygon.h"
 
 // tracer
 
@@ -45,15 +46,15 @@ void World::build()
 {
 	clock_t t = clock();
 	backgroundColour = RGBColour(0.0);
-	
+	/*
 	Sphere* sphere1 = new Sphere(Point3D(-150, 150, 0), 100);
 	sphere1->shader = new Lambert(1.0, 0.0, 0.0, 0.18);
 	addObject(sphere1);
-	
-	Sphere* sphere2 = new Sphere(Point3D(0, 0, 0), 100);
-	sphere2->shader = new Lambert(0.0, 1.0, 0.0, 0.18);
-	addObject(sphere2);
-	
+	*/
+	//Sphere* sphere2 = new Sphere(Point3D(0, 0, 0), 100);
+	//sphere2->shader = new Lambert(0.0, 1.0, 0.0, 0.18);
+	//addObject(sphere2);
+	/*
 	Sphere* sphere3 = new Sphere(Point3D(150, -150, 0), 100);
 	sphere3->shader = new Lambert(0.0, 0.0, 1.0, 0.18);
 	addObject(sphere3);
@@ -69,6 +70,16 @@ void World::build()
 	Disk* disk2 = new Disk(Point3D(-150, -150, 0), Normal(-1.0, 1.0, 1.0), 100);
 	disk2->shader = new Lambert(1, 0, 1, 0.18);
 	addObject(disk2);
+	*/
+	//loader.loadObj("cube.obj");
+	loader.loadObj("sphere.obj");
+	//loader.loadObj("suzanne.obj");
+	loader.printInfo();
+	while (!loader.polygons.empty())
+	{
+		addObject(loader.polygons.back());
+		loader.polygons.pop_back();
+	}
 	
 	Directional* light = new Directional();
 	light->setColour(1.0, 1.0, 1.0);
@@ -103,7 +114,7 @@ RGBColour World::objCollision(const Ray & ray)
 			pixel += (lights[i]->getLightInfo(tr) * tr.pixelColour);
 		}
 	}
-
+	
 	return pixel;
 }
 

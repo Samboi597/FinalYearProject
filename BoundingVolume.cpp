@@ -169,10 +169,10 @@ void BoundingVolume::build(vector<GeometricObject*>& objects)
 
 void BoundingVolume::traverse(const Ray & ray, Tracer & tr, double& t, int& col, int& success)
 {
-	col++;
+	//col++;
 	if (intersect(ray)) 
 	{
-		success++;
+		//success++;
 		if (left == NULL && right == NULL) //if there are no child nodes
 		{
 			testCollisions(ray, tr, t, col, success);
